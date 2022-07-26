@@ -1,0 +1,25 @@
+
+---
+- name: "Automate Docker Build using Ansible"
+  hosts: localhost
+  tasks:
+  - name: stop running container
+    command: docker stop django-container
+    ignore_errors: yes
+
+  - name: remove stopped container
+    command: docker rm django-container
+    ignore_errors: yes
+  
+  - name: remove used image
+    command: docker rmi django-img
+    ignore_errors: yes
+    
+  - name: build docker image from dockerfile
+    command: docker build -t triple3a/django-img .  
+
+  - name: push new docker build to dockerhub
+    command: docker push triple3a/django-img
+
+  - name: run container from image
+    command: docker run -d --name django-container -p 4000:8000 triple3a/django-img
